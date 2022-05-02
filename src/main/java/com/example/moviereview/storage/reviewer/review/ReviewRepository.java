@@ -1,4 +1,4 @@
-package com.example.moviereview.storage.review;
+package com.example.moviereview.storage.reviewer.review;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
