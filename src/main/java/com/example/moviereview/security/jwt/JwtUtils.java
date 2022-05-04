@@ -1,7 +1,7 @@
 package com.example.moviereview.security.jwt;
 
-import com.example.moviereview.security.userdetails.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import com.example.moviereview.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,24 +15,25 @@ public class JwtUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("It-Is-A-sEcReT")
+    @Value("iT-Is-a-sECreT")
     private String jwtSecret;
 
     @Value("86400000")
     private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
+
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
+                .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public String getUsernameFromJwtToken(String token) {
+    public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -51,6 +52,8 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
+
         return false;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.moviereview.storage.user;
+package com.example.moviereview.storage.user.Role;
 
 public enum ERole {
     ROLE_ACTOR,

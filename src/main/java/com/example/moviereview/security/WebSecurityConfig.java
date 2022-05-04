@@ -1,8 +1,8 @@
 package com.example.moviereview.security;
 
-import com.example.moviereview.security.jwt.AuthEntryPoint;
+import com.example.moviereview.security.jwt.AuthEntryPointJwt;
 import com.example.moviereview.security.jwt.AuthTokenFilter;
-import com.example.moviereview.security.userdetails.UserDetailsServiceImpl;
+import com.example.moviereview.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,17 +22,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl userDetailsService;
-
-    private final AuthEntryPoint unauthorizedHandler;
+    UserDetailsServiceImpl userDetailsService;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
     @Autowired
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPoint unauthorizedHandler) {
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
     }
 
-    public WebSecurityConfig(boolean disableDefaults, UserDetailsServiceImpl userDetailsService, AuthEntryPoint unauthorizedHandler) {
+    public WebSecurityConfig(boolean disableDefaults, UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         super(disableDefaults);
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -43,19 +42,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthTokenFilter();
     }
 
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -68,4 +68,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 }
