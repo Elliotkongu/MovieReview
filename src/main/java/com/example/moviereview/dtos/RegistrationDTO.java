@@ -4,8 +4,6 @@ import lombok.Value;
 
 @Value
 public class RegistrationDTO {
-    String username;
-    String password;
     String role;
     String firstName;
     String surName;

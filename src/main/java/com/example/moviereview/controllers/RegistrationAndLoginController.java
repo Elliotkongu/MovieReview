@@ -1,6 +1,5 @@
 package com.example.moviereview.controllers;
 
-import com.example.moviereview.dtos.LoginDTO;
 import com.example.moviereview.dtos.RegistrationDTO;
 import com.example.moviereview.services.RegistrationAndLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,5 @@ public class RegistrationAndLoginController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
         return registrationAndLoginService.registerUser(registrationDTO);
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
-        return registrationAndLoginService.loginUser(loginDTO);
     }
 }

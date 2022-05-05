@@ -50,4 +50,11 @@ public class MovieService {
     public ResponseEntity<?> getAllMovies() {
         return ResponseEntity.ok().body(movieRepository.findAll());
     }
+
+    public ResponseEntity<?> getMovie(Long id) {
+        if (movieRepository.findById(id).isPresent()) {
+            return ResponseEntity.ok().body(movieRepository.findById(id).get());
+        }
+        return ResponseEntity.badRequest().body("Error: Movie not found");
+    }
 }

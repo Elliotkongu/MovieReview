@@ -1,10 +1,6 @@
 package com.example.moviereview.services;
 
-import com.example.moviereview.dtos.JwtDTO;
-import com.example.moviereview.dtos.LoginDTO;
 import com.example.moviereview.dtos.RegistrationDTO;
-import com.example.moviereview.security.jwt.JwtUtils;
-import com.example.moviereview.security.services.UserDetailsImpl;
 import com.example.moviereview.storage.actor.Actor;
 import com.example.moviereview.storage.actor.ActorRepository;
 import com.example.moviereview.storage.director.Director;
@@ -18,54 +14,33 @@ import com.example.moviereview.storage.user.User;
 import com.example.moviereview.storage.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class RegistrationAndLoginService {
-
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ActorRepository actorRepository;
     private final DirectorRepository directorRepository;
     private final ReviewerRepository reviewerRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
 
     private final RoleRepository roleRepository;
 
     @Autowired
-    public RegistrationAndLoginService(PasswordEncoder passwordEncoder, UserRepository userRepository,
+    public RegistrationAndLoginService(UserRepository userRepository,
                                        ActorRepository actorRepository, DirectorRepository directorRepository,
-                                       ReviewerRepository reviewerRepository, AuthenticationManager authenticationManager,
-                                       JwtUtils jwtUtils, RoleRepository roleRepository) {
-        this.passwordEncoder = passwordEncoder;
+                                       ReviewerRepository reviewerRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.actorRepository = actorRepository;
         this.directorRepository = directorRepository;
         this.reviewerRepository = reviewerRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
         this.roleRepository = roleRepository;
     }
 
     public ResponseEntity<?> registerUser(RegistrationDTO registrationDTO) {
-        if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Error: username already registered");
-        }
-
-        User user = new User(registrationDTO.getUsername(),
-                passwordEncoder.encode(registrationDTO.getPassword()),
-                registrationDTO.getFirstName(),
+        User user = new User(registrationDTO.getFirstName(),
                 registrationDTO.getSurName(),
                 registrationDTO.getDateOfBirth(),
                 registrationDTO.getGender());
@@ -122,18 +97,5 @@ public class RegistrationAndLoginService {
                 .orElseThrow(() -> new RuntimeException("Error: Role not found."));
         roles.add(userRole);
         user.setRole(roles);
-    }
-
-    public ResponseEntity<?> loginUser(LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()).get(0);
-        return ResponseEntity.ok().body(new JwtDTO(jwt, userDetails.getId(), role));
     }
 }
