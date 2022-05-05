@@ -16,7 +16,7 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
+    @ManyToMany
     private List<Actor> actors;
     @ManyToOne
     @JoinColumn(name = "director_id")

@@ -57,4 +57,19 @@ public class MovieService {
         }
         return ResponseEntity.badRequest().body("Error: Movie not found");
     }
+
+    public ResponseEntity<?> getAllMoviesByActor(Long actorId) {
+        if (actorRepository.findById(actorId).isPresent()) {
+            Actor actor = actorRepository.findById(actorId).get();
+            List<Movie> movieList = movieRepository.findAll();
+            List<Movie> responseList = new ArrayList<>();
+            for (Movie movie: movieList) {
+                if (movie.getActors().contains(actor)) {
+                    responseList.add(movie);
+                }
+            }
+            return ResponseEntity.ok().body(responseList);
+        }
+        return ResponseEntity.badRequest().body("Error: could not find actor");
+    }
 }

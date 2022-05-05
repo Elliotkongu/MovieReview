@@ -32,4 +32,9 @@ public class MovieController {
     public ResponseEntity<?> getMovie(@PathVariable("id") Long id) {
         return movieService.getMovie(id);
     }
+
+    @GetMapping("/get_by_actor/{actorId}")
+    public ResponseEntity<?> getByActor(@PathVariable("actorId") Long actorId) {
+        return movieService.getAllMoviesByActor(actorId);
+    }
 }
