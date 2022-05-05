@@ -64,7 +64,11 @@ public class RegistrationAndLoginService {
         }
 
         User user = new User(registrationDTO.getUsername(),
-                passwordEncoder.encode(registrationDTO.getPassword()));
+                passwordEncoder.encode(registrationDTO.getPassword()),
+                registrationDTO.getFirstName(),
+                registrationDTO.getSurName(),
+                registrationDTO.getDateOfBirth(),
+                registrationDTO.getGender());
         userRepository.save(user);
         if (registrationDTO.getRole().equalsIgnoreCase("ACTOR")) {
             return registerActor(user);

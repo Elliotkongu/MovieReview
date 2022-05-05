@@ -3,10 +3,9 @@ package com.example.moviereview.dtos;
 import lombok.Value;
 
 @Value
-public class RegistrationDTO {
-    String username;
-    String password;
-    String role;
+public class DirectorDTO {
+    Long id;
+    Long userId;
     String firstName;
     String surName;
     String dateOfBirth;

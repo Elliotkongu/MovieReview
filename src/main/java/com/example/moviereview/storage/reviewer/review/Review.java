@@ -1,6 +1,7 @@
 package com.example.moviereview.storage.reviewer.review;
 
 import com.example.moviereview.storage.movie.Movie;
+import com.example.moviereview.storage.reviewer.Reviewer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,7 @@ public class Review {
     private Movie movie;
     private String title;
     private String content;
-    private String reviewer;
+    @ManyToOne
+    @JoinColumn(name = "reviewer_id")
+    private Reviewer reviewer;
 }
