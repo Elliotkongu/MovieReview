@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/i/directors")
+@RequestMapping("/api/directors")
 public class DirectorController {
 
     private final DirectorService directorService;

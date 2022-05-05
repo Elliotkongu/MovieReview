@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/i/actors")
+@RequestMapping("/api/actors")
 public class ActorController {
 
     private final ActorService actorService;
