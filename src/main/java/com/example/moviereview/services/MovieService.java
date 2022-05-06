@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MovieService {
@@ -71,5 +72,19 @@ public class MovieService {
             return ResponseEntity.ok().body(responseList);
         }
         return ResponseEntity.badRequest().body("Error: could not find actor");
+    }
+
+    public ResponseEntity<?> getAllByDirector(Long directorId) {
+        if (directorRepository.findById(directorId).isPresent()) {
+            List<Movie> movieList = movieRepository.findAll();
+            List<Movie> responseList = new ArrayList<>();
+            for (Movie movie : movieList) {
+                if (Objects.equals(movie.getDirector().getId(), directorId)) {
+                    responseList.add(movie);
+                }
+            }
+            return ResponseEntity.ok().body(responseList);
+        }
+        return ResponseEntity.badRequest().body("Error: Director not found");
     }
 }
